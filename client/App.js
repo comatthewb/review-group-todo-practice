@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 
 export default class App extends React.Component {
   constructor(props) {
@@ -10,11 +11,38 @@ export default class App extends React.Component {
     this.addItem = this.addItem.bind(this);
     this.inputHandler = this.inputHandler.bind(this);
   }
+
+  componentDidMount() {
+    axios
+      .get("/home")
+      .then(results => {
+        console.log(results.data[0].itemName);
+        let array = [];
+        let newState = results.data.map(item => {
+          array.push(item.itemName);
+        });
+        console.log(array);
+        this.setState({
+          gList: array
+        });
+      })
+      .catch(console.log);
+  }
+
   addItem() {
-    this.setState({
-      gList: [...this.state.gList, this.state.groceryItem],
-      groceryItem: ""
-    });
+    let data = this.state.groceryItem;
+    // console.log(this.state.groceryItem);
+    axios
+      .post("/post", { data })
+      .then(response => {
+        this.setState({
+          gList: [...this.state.gList, this.state.groceryItem],
+          groceryItem: ""
+        });
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
     document.getElementById("GroceryInput").focus();
   }
 
@@ -33,7 +61,7 @@ export default class App extends React.Component {
           placeholder="add item"
           onChange={this.inputHandler}
         />
-        <button onClick={this.addItem} id="submit">
+        <button onClick={this.addItem} id="itemSubmit">
           submit
         </button>
         <ul>
