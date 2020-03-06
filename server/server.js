@@ -10,16 +10,31 @@ app.use(express.static("./dist"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
+//get all items in db table groceryitems
+
 app.get("/home", (req, res) => {
   db.query("select itemName from groceryitems", (err, data) => {
     if (err) {
       console.log("this is junk");
     } else {
-      console.log(data);
       res.send(data);
     }
   });
 });
+
+//delete item from database where id =
+
+app.delete("/delete", (req, res) => {
+  db.query("delete itemName from groceryitems WHERE id =", (err, data) => {
+    if (err) {
+      console.log("this is junk");
+    } else {
+      res.send("item deleted");
+    }
+  });
+});
+
+//insert item into db table groceryitems
 
 app.post("/post", (req, res) => {
   //   console.log(req.body.data);

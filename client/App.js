@@ -10,18 +10,18 @@ export default class App extends React.Component {
     };
     this.addItem = this.addItem.bind(this);
     this.inputHandler = this.inputHandler.bind(this);
+    this.deleteItem = this.deleteItem.bind(this);
   }
 
   componentDidMount() {
     axios
       .get("/home")
       .then(results => {
-        console.log(results.data[0].itemName);
         let array = [];
         let newState = results.data.map(item => {
           array.push(item.itemName);
         });
-        console.log(array);
+
         this.setState({
           gList: array
         });
@@ -36,7 +36,7 @@ export default class App extends React.Component {
       .post("/post", { data })
       .then(response => {
         this.setState({
-          gList: [...this.state.gList, this.state.groceryItem],
+          gList: [...this.state.gList, data],
           groceryItem: ""
         });
       })
@@ -44,6 +44,12 @@ export default class App extends React.Component {
         console.log(error);
       });
     document.getElementById("GroceryInput").focus();
+  }
+
+  deleteItem() {
+    console.log("delete handler fired");
+    axios.delete("/delete", )
+
   }
 
   inputHandler(event) {
@@ -66,7 +72,12 @@ export default class App extends React.Component {
         </button>
         <ul>
           {this.state.gList.map((item, index) => (
-            <li key={index}>{item}</li>
+            <li key={index}>
+              {item}
+              <button key={index} onClick={this.deleteItem}>
+                x
+              </button>
+            </li>
           ))}
         </ul>
       </div>
